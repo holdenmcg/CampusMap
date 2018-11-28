@@ -153,10 +153,10 @@ public class ConvolutionService {
             SampleModel sm = im.getSampleModel();
             DataBuffer dbuf = im.getData().getDataBuffer();
 
-            String filepath = System.getProperty("java.io.tmpdir") + "file.jpg";
+            File tmpfile = File.createTempFile("file", ".jpg");
             convolve(imRead, imWrite, 1, model.getKernel(), sm, dbuf);
-            ImageIO.write(im, "jpg", new File(filepath));
-            InputStream in = new FileInputStream(new File(filepath));
+            ImageIO.write(im, "jpg", tmpfile);
+            InputStream in = new FileInputStream(tmpfile);
             return IOUtils.toByteArray(in);
         }
         catch(Exception e) {
