@@ -11,34 +11,20 @@ import FormControl from '@material-ui/core/FormControl';
 import Button from '@material-ui/core/Button';
 import * as fetch from "node-fetch";
 
-const styles = theme => ({
-    root: {
-        display: 'flex',
-        flexWrap: 'wrap',
-    },
-    formControl: {
-        margin: theme.spacing.unit,
-        minWidth: 120,
-    },
-    selectEmpty: {
-        marginTop: theme.spacing.unit * 2,
-    },
-});
-
 class App extends Component {
 
     state = {
         operation: '',
         name: '',
-        newurl: '',
+        newurl: 'https://www.thefutonshop.com/media/catalog/product/cache/1/image/650x433/9df78eab33525d08d6e5fb8d27136e95/S/o/Solid_White_Futon_Cover.jpg',
     };
 
     update(val){
-      this.state.operation = val;
+        this.state.operation = val;
     }
 
     update2(val){
-      this.state.name = val;
+        this.state.name = val;
     }
 
     callFetch(){
@@ -50,37 +36,38 @@ class App extends Component {
             headers: { 'Content-Type': 'application/json' },
         })
 
-            .then(res => var buffer = res.arrayBuffer()  new Buffer(buffer, 'binary').toString(CONVERTED_FORMAT);
-            .then(json => console.log(json));
+            .then(res => res.arrayBuffer())
+            .then(myBuffer => new Buffer(myBuffer, 'binary').toString('base64'))
+            .then(newUrl => this.setState({newurl: newUrl }))
+    }
+
+    render() {
+        return (
+            <div className="App">
+                <header className="App-header">
+                    <img src={'data:image/png;base64, ' + this.state.newurl}/>
+                    {/*<img src={logo} className="App-logo" alt="logo" />*/}
+                    <p>
+                        enter your link here:
+                    </p>
+                    <TextFields  custom2={this.update2.bind(this)} classes={{textField: 'test', container: 'test2' }} height={'500'} width={'700'}/>
+                    <SimpleSelect custom={this.update.bind(this)}/>
+                    <Button onClick={this.callFetch.bind(this)} className={'button'}>ACTIVATE</Button>
+                    <a
+                        className="App-link"
+                        href="https://reactjs.org"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        Learn React
+                    </a>
+                </header>
+            </div>
+        );
+    }
 }
 
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={'https://www.thefutonshop.com/media/catalog/product/cache/1/image/650x433/9df78eab33525d08d6e5fb8d27136e95/S/o/Solid_White_Futon_Cover.jpg'}/>
-          {/*<img src={logo} className="App-logo" alt="logo" />*/}
-          <p>
-            enter your link here:
-          </p>
-          <TextFields  custom2={this.update2.bind(this)} classes={{textField: 'test', container: 'test2' }} height={'500'} width={'700'}/>
-          <SimpleSelect custom={this.update.bind(this)}/>
-            <Button onClick={this.callFetch.bind(this)} className={'button'}>ACTIVATE</Button>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
-  }
-}
-
- class TextFields extends React.Component {
+class TextFields extends React.Component {
     state = {
         name: 'enter url',
     };
@@ -116,12 +103,10 @@ class SimpleSelect extends React.Component {
         labelWidth: 0,
     };
 
-
     handleSelect = event => {
-      this.setState({ operation: event.target.value})
+        this.setState({ operation: event.target.value})
         this.props.custom(event.target.value);
     }
-
 
     render() {
         // const { classes } = this.props;
@@ -149,10 +134,7 @@ class SimpleSelect extends React.Component {
                 </FormControl>
             </form>
         )
-  }
+    }
 }
-
-
 ;
-
 export default App;
